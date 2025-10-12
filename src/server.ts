@@ -1,7 +1,17 @@
 import { Server } from 'http';
 import app from './app';
 import config from './config';
+import { prisma } from './config/db';
 
+async function connectToDB() {
+  try {
+    await prisma.$connect()
+    console.log("*** DB connection successfull!!")
+  } catch (error) {
+    console.log("*** DB connection failed!",error)
+    process.exit(1);
+  }
+}
 
 async function bootstrap() {
     // This variable will hold our server instance
@@ -9,6 +19,7 @@ async function bootstrap() {
 
     try {
         // Start the server
+        await connectToDB();
         server = app.listen(config.port, () => {
             console.log(`🚀 Server is running on http://localhost:${config.port}`);
         });
