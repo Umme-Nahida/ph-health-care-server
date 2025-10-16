@@ -28,10 +28,7 @@ const login = catchAsync(async (req:Request, res:Response)=>{
         statusCode: 201,
         success:true,
         message: "User loggedin successfully",
-        data: {
-            needPasswordChange: result.needPasswordChange,
-            user: result.user
-        }
+        data: result.user
     })
 })
 
