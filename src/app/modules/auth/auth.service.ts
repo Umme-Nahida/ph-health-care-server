@@ -1,9 +1,8 @@
 import { UserStatus } from "@prisma/client"
 import { prisma } from "../../../config/db"
 import bcrypt from "bcryptjs"
-import Jwt  from "jsonwebtoken"
-import { email } from "zod"
 import { generateToken } from "../../helpers/jwtToken"
+import config from "../../../config"
 
 
 const login = async(payload: {email: string, password: string})=>{
@@ -23,8 +22,8 @@ const login = async(payload: {email: string, password: string})=>{
         email: user.email,
         role: user.role
     }
-    const accessToken = generateToken(payloadJwt, "secret", "1h")
-    const refreshToken = generateToken(payloadJwt, 'secret', "90d")
+    const accessToken = generateToken(payloadJwt, config.jwt_secret as string, config.jwt_expire_in as string)
+    const refreshToken = generateToken(payloadJwt, config.jwt_refresh_secret as string, config.jwt_refresh_expire_in as string)
     return {
         accessToken,
         refreshToken,

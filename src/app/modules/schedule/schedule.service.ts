@@ -4,50 +4,114 @@ import { Prisma } from "@prisma/client";
 import { gte } from "zod";
 import { calcultatepagination } from "../../helpers/paginationHelper";
 
+// const insertIntoDB = async (payload: any) => {
+
+//     const { startTime, endTime, startDate, endDate } = payload;
+//     const intervalTime = 30; //30 minutes
+//     const schedules = [];
+
+//     const currentDate = new Date(startDate);
+//     const lastDate = new Date(endDate);
+
+//     while (currentDate <= lastDate) {
+
+//         const startDateTime = new Date(
+//             addMinutes(
+//                 addHours(
+//                     `${format(currentDate, "yyyy-MM-dd")}`,
+//                     Number(startTime.split(":")[0]) //11:00
+//                 ),
+//                 Number(startTime.split(":")[1])
+//             )
+//         )
+
+
+//         const endDateTime = new Date(
+//             addMinutes(
+//                 addHours(
+//                     `${format(currentDate, "yyyy-MM-dd")}`,
+//                     Number(endTime.split(":")[0]) //11:00
+//                 ),
+//                 Number(endTime.split(":")[1])
+//             )
+//         )
+//         console.log("ISO Date:", startDate, endDate)
+//         console.log("Full ISO Date:", currentDate, lastDate)
+//         console.log("startDateTime & endDateTime", startDateTime, endDateTime)
+
+
+//         while (startDateTime < endDateTime) {
+//             const slotStartDateTime = startDateTime; //10:00
+//             const slotEndDateTime = addMinutes(startDateTime, intervalTime) //10:30
+
+
+//             const scheduleData = {
+//                 startDateTime: slotStartDateTime,
+//                 endDateTime: slotEndDateTime,
+//             }
+
+//             const existingSchedule = await prisma.schedule.findFirst({
+//                 where: scheduleData
+//             })
+
+//             if (!existingSchedule) {
+//                 const result = await prisma.schedule.create({
+//                     data: scheduleData
+//                 })
+
+//                 schedules.push(result);
+//             }
+
+
+//             // update startDateTime for next slot, that means 10:30
+//             slotStartDateTime.setMinutes(slotEndDateTime.getMinutes() + intervalTime);
+//         }
+//         // move to next day and start next day schedule
+//         currentDate.setDate(currentDate.getDate() + 1);
+//     }
+
+//     return schedules;
+// }
+
+
 const insertIntoDB = async (payload: any) => {
 
     const { startTime, endTime, startDate, endDate } = payload;
-    const intervalTime = 30; //30 minutes
+
+    const intervalTime = 30;
     const schedules = [];
 
     const currentDate = new Date(startDate);
     const lastDate = new Date(endDate);
 
     while (currentDate <= lastDate) {
-
         const startDateTime = new Date(
             addMinutes(
                 addHours(
                     `${format(currentDate, "yyyy-MM-dd")}`,
-                    Number(startTime.split(":")[0]) //11:00
+                    Number(startTime.split(":")[0]) // 11:00
                 ),
                 Number(startTime.split(":")[1])
             )
         )
 
-
         const endDateTime = new Date(
             addMinutes(
                 addHours(
                     `${format(currentDate, "yyyy-MM-dd")}`,
-                    Number(endTime.split(":")[0]) //11:00
+                    Number(endTime.split(":")[0]) // 11:00
                 ),
                 Number(endTime.split(":")[1])
             )
         )
-        console.log("ISO Date:", startDate, endDate)
-        console.log("Full ISO Date:", currentDate, lastDate)
-        console.log("startDateTime & endDateTime", startDateTime, endDateTime)
-
 
         while (startDateTime < endDateTime) {
-            const slotStartDateTime = startDateTime; //10:00
-            const slotEndDateTime = addMinutes(startDateTime, intervalTime) //10:30
-
+            const slotStartDateTime = startDateTime; // 10:30
+            const slotEndDateTime = addMinutes(startDateTime, intervalTime); // 11:00
 
             const scheduleData = {
                 startDateTime: slotStartDateTime,
-                endDateTime: slotEndDateTime,
+                endDateTime: slotEndDateTime
             }
 
             const existingSchedule = await prisma.schedule.findFirst({
@@ -57,17 +121,14 @@ const insertIntoDB = async (payload: any) => {
             if (!existingSchedule) {
                 const result = await prisma.schedule.create({
                     data: scheduleData
-                })
-
-                schedules.push(result);
+                });
+                schedules.push(result)
             }
 
-
-            // update startDateTime for next slot, that means 10:30
-            slotStartDateTime.setMinutes(slotEndDateTime.getMinutes() + intervalTime);
+            slotStartDateTime.setMinutes(slotStartDateTime.getMinutes() + intervalTime);
         }
-        // move to next day and start next day schedule
-        currentDate.setDate(currentDate.getDate() + 1);
+
+        currentDate.setDate(currentDate.getDate() + 1)
     }
 
     return schedules;
@@ -110,7 +171,7 @@ const schedulesForDoctor = async (filters: any, options: any) => {
         where: whereCondition,
         skip,
         take: limitNumber,
-        orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: "desc" }
+        orderBy: sortBy && sortOrder ? { [sortBy]: sortOrder } : { createdAt: "asc" }
     })
 
 
@@ -129,7 +190,16 @@ const schedulesForDoctor = async (filters: any, options: any) => {
 }
 
 
+const schedulesDelete = async (id: string) => {
+    const result = await prisma.schedule.delete({
+        where: {id}
+    }
+     );
+     return result;
+}
+
 export const ScheduleService = {
     insertIntoDB,
-    schedulesForDoctor
+    schedulesForDoctor,
+    schedulesDelete
 }
