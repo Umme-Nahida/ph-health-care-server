@@ -10,8 +10,10 @@ const createDoctorSchedule = async (user:IJWTPayload,payload:any) => {
             email: user.email
         }
     });
+
+    
    const doctorScheduleData = payload.scheduleIds.map((schedule: string) => ({
-      doctorId: user.id,
+      doctorId: doctorData.id,
       scheduleId: schedule
    }))
 
