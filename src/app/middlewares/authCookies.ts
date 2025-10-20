@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from "express"
 import { verifyToken } from "../helpers/jwtToken";
 import config from "../../config";
+import httpStatus from "http-status"
+import AppError from "../customizeErr/AppError";
 
 const authCookies = (...roles: string[]) => {
     return async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
@@ -10,7 +12,7 @@ const authCookies = (...roles: string[]) => {
             
 
             if (!token) {
-                throw new Error("you don't have a token!")
+                throw new AppError(httpStatus.UNAUTHORIZED,"you don't have a token!")
             }
 
             const verifyUser = verifyToken(token, config.jwt_secret as string);
@@ -18,7 +20,7 @@ const authCookies = (...roles: string[]) => {
             req.user = verifyUser;
 
             if (roles.length && !roles.includes(verifyUser.role)) {
-                throw new Error("You are not authorized!")
+                throw new AppError(httpStatus.UNAUTHORIZED,"You are not authorized!")
             }
 
             next();
