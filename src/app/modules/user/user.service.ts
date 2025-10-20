@@ -37,7 +37,7 @@ const createPatient = async (payload: Request) => {
     })
   })
 
-  console.log("result from service", result)
+  // console.log("result from service", result)
   return result;
 
 }
@@ -134,8 +134,8 @@ const getAllUser = async (filters:any, options:any) => {
   const pageNumber = page || 1;
   const limitNumber = limit || 5;
   const search = searchTerm || "";
-  console.log("sortyBy", sortBy)
-  console.log("sortyBy", sortOrder)
+  // console.log("sortyBy", sortBy)
+  // console.log("sortyBy", sortOrder)
 
   const skip = (pageNumber - 1) * limitNumber;
 

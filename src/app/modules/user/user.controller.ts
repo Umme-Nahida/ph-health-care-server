@@ -31,7 +31,7 @@ const createAdmin = catchAsync(async (req: Request, res: Response) => {
 });
 
 const createDoctor = catchAsync(async (req: Request, res: Response) => {
-    console.log("doctor controller req", req.body)
+    // console.log("doctor controller req", req.body)
     const result = await userService.createDoctor(req);
     sendResponse(res, {
         statusCode: 201,
