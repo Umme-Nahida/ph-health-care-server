@@ -7,13 +7,28 @@ router.get(
     DoctorController.getAllFromDB
 )
 
+router.post(
+    "/suggestion",
+    DoctorController.getAISuggesions
+)
+
+router.get('/:id', DoctorController.getByIdFromDB);
+
 router.patch(
     "/:id",
     DoctorController.updateIntoDB
 )
 
-router.post(
-    "/suggestion",
-    DoctorController.getAISuggesions
-)
+
+// router.delete(
+//     '/:id',
+//     auth(UserRole.ADMIN),
+//     DoctorController.deleteFromDB
+// );
+
+// router.delete(
+//     '/soft/:id',
+//     auth(UserRole.ADMIN),
+//     DoctorController.softDelete);
+
 export const DoctorRoutes = router;

@@ -10,7 +10,6 @@ const createDoctorSchedule = async (user:IJWTPayload,payload:any) => {
             email: user.email
         }
     });
-
     
    const doctorScheduleData = payload.scheduleIds.map((schedule: string) => ({
       doctorId: doctorData.id,
@@ -21,6 +20,7 @@ const createDoctorSchedule = async (user:IJWTPayload,payload:any) => {
    return await prisma.doctorSchedules.createMany({
       data: doctorScheduleData
    })
+
 }
 
 export const DoctorScheduleService = {

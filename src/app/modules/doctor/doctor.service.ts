@@ -1,4 +1,4 @@
-import {  Doctor, Prisma } from "@prisma/client";
+import { Doctor, Prisma } from "@prisma/client";
 import { doctorSearchableFields } from "./doctor.constant";
 import { IDoctorUpdateInput } from "./doctor.interface";
 import { prisma } from "../../../config/db";
@@ -6,7 +6,6 @@ import { calcultatepagination, Ioptions } from "../../helpers/paginationHelper";
 import httpStatus from "http-status"
 import AppError from "../../customizeErr/AppError";
 import { openai } from "../../helpers/open-router";
-import { cleanRegex } from "zod/v4/core/util.cjs";
 
 const getAllFromDB = async (filters: any, options: Ioptions) => {
     const { page, limit, skip, sortBy, sortOrder } = calcultatepagination(options);
@@ -94,7 +93,7 @@ const updateIntoDB = async (id: string, payload: Partial<IDoctorUpdateInput>) =>
 
     console.log("specialties:", specialties)
 
-    return await prisma.$transaction(async (tnx:any) => {
+    return await prisma.$transaction(async (tnx: any) => {
         if (specialties && specialties.length > 0) {
             const deleteSpecialtyIds = specialties.filter((specialty) => specialty.isDeleted);
 
@@ -160,7 +159,7 @@ const updateIntoDB = async (id: string, payload: Partial<IDoctorUpdateInput>) =>
 //     console.log("specialties:", updateInfo)
 //     return updateInfo
 
-  
+
 
 // }
 
@@ -196,27 +195,74 @@ Return your response in JSON format with full individual doctor data.
 `;
 
     console.log("analyzing......\n")
-    const completion = await openai.chat.completions.create({
-        model: 'z-ai/glm-4.5-air:free',
-        messages: [
-            {
-                role: "system",
-                content:
-                    "You are a helpful AI medical assistant that provides doctor suggestions.",
-            },
-            {
-                role: 'user',
-                content: prompt,
-            },
-        ],
-    });
+    try {
+        const completion = await openai.chat.completions.create({
+            model: 'z-ai/glm-4.5-air:free',
+            messages: [
+                {
+                    role: "system",
+                    content:
+                        "You are a helpful AI medical assistant that provides doctor suggestions.",
+                },
+                {
+                    role: 'user',
+                    content: prompt,
+                },
+            ],
+        });
+
+
+        console.log(completion.choices[0].message)
+        const response = completion.choices[0].message;
+
+        // Extract the JSON string between ```json and ```
+        const jsonMatch = response.content?.match(/```json([\s\S]*?)```/);
+
+        if (jsonMatch) {
+            const doctorData = JSON.parse(jsonMatch[1].trim());
+            console.log("doctorData", doctorData);
+            return doctorData
+        } else {
+            console.error("No JSON found in response");
+        }
+    } catch (err) {
+        console.error("AI error:", err);
+        throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, "AI request failed!");
+    }
 
     // const result = await extractJsonFromMessage(completion.choices[0].message)
     // return result;
 }
 
+
+
+
+const getByIdFromDB = async (id: string): Promise<Doctor | null> => {
+    console.log("id:", id)
+    const result = await prisma.doctor.findUnique({
+        where: {
+            id,
+            isDeleted: false,
+        },
+        include: {
+            doctorSpecialties: {
+                include: {
+                    specialities: true,
+                },
+            },
+            doctorSchedules: {
+                include: {
+                    schedule: true
+                }
+            }
+        },
+    });
+    return result;
+};
+
 export const DoctorService = {
     getAllFromDB,
     updateIntoDB,
-    getAISuggesions
+    getAISuggesions,
+    getByIdFromDB
 }

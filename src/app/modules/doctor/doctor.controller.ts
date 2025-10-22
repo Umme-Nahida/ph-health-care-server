@@ -34,6 +34,21 @@ const updateIntoDB = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+
+// get single doctor data with specialty
+const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await DoctorService.getByIdFromDB(id);
+    console.log("result", result)
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Single Doctor retrieval successfully',
+        data: result,
+    });
+});
+
+
 //--------------getAISuggesions
 const getAISuggesions = catchAsync(async (req: Request, res: Response) => {
 
@@ -52,5 +67,6 @@ const getAISuggesions = catchAsync(async (req: Request, res: Response) => {
 export const DoctorController = {
     getAllFromDB,
     updateIntoDB,
-    getAISuggesions
+    getAISuggesions,
+    getByIdFromDB
 }
