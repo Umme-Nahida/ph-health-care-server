@@ -1,6 +1,6 @@
 
 
-type Ioptions = {
+export type Ioptions = {
     page?: number;
     limit?: number;
     sortBy?: string;
