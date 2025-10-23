@@ -1,14 +1,16 @@
 <h3>How to Implement Stripe in Your Project</h3>
 
 
-✅Step-1: Visit this site https://stripe.com and create a free account.
-✅Step-2: install stripe in your project using this command 
+<h1>✅Step-1:</h1> Visit this site https://stripe.com and create a free account.
+
+
+<h1>✅Step-2: install stripe in your project</h1>
 
  👉go to Dashboard → Developers → API keys and copy the Publishable key & Secret key
  👉add Publishable key & Secret key in your .env file
 
 
-✅Step 3: Create a Stripe instance 
+<h1>✅Step-3: Create a Stripe instance</h1> 
 
 create src/config/stripe.ts and write this text below in your strive file
 
@@ -21,12 +23,14 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-01-27", // বা latest version
 });
 
-✅Step 4: Payment Intent API বানাও
+
+<h1>✅Step 4: Make Payment Intent API</h1> 
 
 right now create a route, that will created a Stripe payment intent get the amount from req or frontend 
 
 
-✅Step 5: Frontend 
+
+<h1>✅Step 5: Frontend </h1> 
 Call backend payment api from frontent after completing the backend using frontend SDK of Stripe
 
 ✅ Step 6: Save the appointment after successful payment
