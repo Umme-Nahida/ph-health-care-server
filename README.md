@@ -12,8 +12,9 @@
 
 <h3>✅Step-3: Create a Stripe instance</h3> 
 
-create src/config/stripe.ts and write this text below in your strive file
+### 🧾 Stripe Configuration
 
+```typescript
 import Stripe from "stripe";
 import dotenv from "dotenv";
 
@@ -22,6 +23,7 @@ dotenv.config();
 export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-01-27", // বা latest version
 });
+```
 
 
 <h3>✅Step 4: Make Payment Intent API</h3> 
@@ -33,7 +35,7 @@ right now create a route, that will created a Stripe payment intent get the amou
 <h3>✅Step 5: Frontend </h3> 
 Call backend payment api from frontent after completing the backend using frontend SDK of Stripe
 
-✅ Step 6: Save the appointment after successful payment
+<h3>✅Step 6: Save the appointment after successful payment</h3> 
 
 When the payment is confirmed, go to your backend /appointment route and create the appointment record.
 Make sure to set paymentStatus: "paid" in the database.
