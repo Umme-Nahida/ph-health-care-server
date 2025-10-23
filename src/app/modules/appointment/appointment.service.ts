@@ -52,7 +52,7 @@ const createAppointment = async (user: IJWTPayload, payload: { doctorId: string,
 
 
         const transactionId = uuidv4();
-        
+
         await tnx.payment.create({
             data: {
                 appointmentId: appointmentData.id,
@@ -66,46 +66,7 @@ const createAppointment = async (user: IJWTPayload, payload: { doctorId: string,
 
 
   return result
-    
-    // const result = await prisma.$transaction(async (tnx) => {
-    //     const appointmentData = await tnx.appointment.create({
-    //         data: {
-    //             patientId: patientData.id,
-    //             doctorId: doctorData.id,
-    //             scheduleId: payload.scheduleId,
-    //             videoCallingId
-    //         }
-    //     })
 
-    //     await tnx.doctorSchedules.update({
-    //         where: {
-    //             doctorId_scheduleId: {
-    //                 doctorId: doctorData.id,
-    //                 scheduleId: payload.scheduleId
-    //             }
-    //         },
-    //         data: {
-    //             isBooked: true
-    //         }
-    //     })
-
-    //     const transactionId = uuidv4();
-
-    //     await tnx.payment.create({
-    //         data: {
-    //             appointmentId: appointmentData.id,
-    //             amount: doctorData.appointmentFee,
-    //             transactionId
-    //         }
-    //     })
-
-    //     return appointmentData;
-    // })
-
-
-    // return result;
-
-    // console.log("hello:",{patientid:user.id, doctorId: payload.doctorId, scheduleId: payload.scheduleId, videoCallingId:videoCallingId})
 };
 
 export const AppointmentService = {

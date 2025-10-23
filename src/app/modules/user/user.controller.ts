@@ -7,7 +7,7 @@ import { pick } from "../../helpers/pick";
 
 
 const createPatient = catchAsync(async (req:Request, res:Response)=>{
-    // console.log("patient created", req)
+    // console.log("patient created", req.body)
     const result = await userService.createPatient(req)
 
     sendResponse(res, {
