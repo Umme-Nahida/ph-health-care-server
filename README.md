@@ -1,4 +1,4 @@
-<h4>How to Implement Stripe in Your Project<h4/>
+<h3>How to Implement Stripe in Your Project<h3/>
 
 
 ✅Step-1: Visit this site https://stripe.com and create a free account.
