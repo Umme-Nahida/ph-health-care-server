@@ -1,14 +1,14 @@
 <h4>How to Implement Stripe in Your Project<h4/>
 
 
-Step-1: Visit this site https://stripe.com and create a free account.
-Step-2: install stripe in your project using this command 
+✅Step-1: Visit this site https://stripe.com and create a free account.
+✅Step-2: install stripe in your project using this command 
 
-# go to Dashboard → Developers → API keys and copy the Publishable key & Secret key
-# add Publishable key & Secret key in your .env file
+ 👉go to Dashboard → Developers → API keys and copy the Publishable key & Secret key
+ 👉add Publishable key & Secret key in your .env file
 
 
-Step 3: Create a Stripe instance 
+✅Step 3: Create a Stripe instance 
 
 create src/config/stripe.ts and write this text below in your strive file
 
@@ -21,26 +21,25 @@ export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: "2025-01-27", // বা latest version
 });
 
-Step 4: Payment Intent API বানাও
+✅Step 4: Payment Intent API বানাও
 
 right now create a route, that will created a Stripe payment intent get the amount from req or frontend 
 
 
-Step 5: Frontend 
+✅Step 5: Frontend 
 Call backend payment api from frontent after completing the backend using frontend SDK of Stripe
 
-Step 6: ।
+✅ Step 6: Save the appointment after successful payment
 
-💾 Step 6: Payment success হলে appointment save করো
-
-যখন payment confirm হয়ে যাবে, তখন তোমার backend /appointment route-এ গিয়ে appointment তৈরি করে দিও, এবং সেখানে paymentStatus: "paid" রাখো।
+When the payment is confirmed, go to your backend /appointment route and create the appointment record.
+Make sure to set paymentStatus: "paid" in the database.
 
 🚀 Bonus Tips:
 
-Stripe Dashboard এ test mode চালু করে নাও, তাহলে dummy card দিয়ে টেস্ট করতে পারবে:
-👉 4242 4242 4242 4242 (expiry যেকোনো future date, CVC যেকোনো 3 digit)
+Enable Test Mode in your Stripe Dashboard so you can test using dummy cards.
+👉 Use the test card: 4242 4242 4242 4242 (any future expiry date, and any 3-digit CVC).
 
-Prisma দিয়ে Payment বা Appointment টেবিলে status update করো।
+Use Prisma to update the status field in the Payment or Appointment table.
 
 
 
