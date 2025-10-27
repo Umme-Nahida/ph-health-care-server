@@ -7,7 +7,7 @@ import AppError from "../customizeErr/AppError";
 const authCookies = (...roles: string[]) => {
     return async (req: Request & { user?: any }, res: Response, next: NextFunction) => {
         try {
-            // console.log("req cookies",req.cookies)
+            // console.log("roles---",...roles)
             const token = req.cookies.accessToken || req.headers.authorization?.split(" ")[1];
             
 
@@ -19,7 +19,10 @@ const authCookies = (...roles: string[]) => {
 
             req.user = verifyUser;
 
-            if (roles.length && !roles.includes(verifyUser.role)) {
+            // console.log("cokieUser:", verifyUser.role)
+
+
+            if (!roles.includes(verifyUser.role)) {
                 throw new AppError(httpStatus.UNAUTHORIZED,"You are not authorized!")
             }
 
