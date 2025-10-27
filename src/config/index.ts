@@ -14,5 +14,8 @@ export default {
     jwt_refresh_expire_in: process.env.JWT_EXPIRES_IN_REFRESH,
     cloudinary_api_key: process.env.CLOUDINARY_API_KEY,
     cloudinary_api_secret: process.env.CLOUDINARY_API_SECRET,
-    open_router_api_key: process.env.OPEN_ROUTER_API_KEY
+    open_router_api_key: process.env.OPEN_ROUTER_API_KEY,
+    stripe_publishable_key: process.env.STRIPE_PUBLISHABLE_KEY,
+    stripe_secret_key: process.env.STRIPE_PUBLISHABLE_SECRET_KEY,
+    stripe_webhook_secret: process.env.Stripe_Webhook_Scret
 }
