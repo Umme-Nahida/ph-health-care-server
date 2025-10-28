@@ -4,7 +4,9 @@ import { IJWTPayload } from "../../Types/types";
 import { v4 as uuidv4 } from 'uuid';
 import { stripe } from "../../helpers/stripe";
 import { calcultatepagination, Ioptions } from "../../helpers/paginationHelper";
-import { Prisma, UserRole } from "@prisma/client";
+import { AppointmentStatus, Prisma, UserRole } from "@prisma/client";
+import { tuple } from "zod";
+import AppError from "../../customizeErr/AppError";
 
 const createAppointment = async (user: IJWTPayload, payload: { doctorId: string, scheduleId: string }) => {
     const patientData = await prisma.patient.findUniqueOrThrow({
@@ -159,7 +161,39 @@ const myAppointment = async (user: IJWTPayload, filters: any, options: Ioptions)
 
 }
 
+
+const updateAppointmentStatus = async(appointmentId:string, status: AppointmentStatus, user:any)=>{
+    const appointmentData = await prisma.appointment.findUniqueOrThrow({
+        where:{
+            id: appointmentId
+        },
+        include:{
+            doctor:true,
+            patient:true
+        }
+    })
+
+    if(user.role === UserRole.DOCTOR){
+        if(!(user.email === appointmentData.doctor.email)){
+            throw new AppError(403, "This is not your appointment")
+        }
+    }
+
+    const result = await prisma.appointment.update({
+        where: {
+            id:appointmentId
+        },
+        data: {
+            status
+        }
+    });
+
+    return result;
+
+}
+
 export const AppointmentService = {
     createAppointment,
-    myAppointment
+    myAppointment,
+    updateAppointmentStatus
 };
