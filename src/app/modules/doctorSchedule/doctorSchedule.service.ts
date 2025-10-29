@@ -1,6 +1,8 @@
 import { Prisma } from "@prisma/client";
 import { IJWTPayload } from "../../Types/types";
 import { prisma } from "../../../config/db";
+import AppError from "../../customizeErr/AppError";
+import { constructNow } from "date-fns";
 
 
 const createDoctorSchedule = async (user:IJWTPayload,payload:any) => {
@@ -23,6 +25,25 @@ const createDoctorSchedule = async (user:IJWTPayload,payload:any) => {
 
 }
 
+// get doctor schedule by id
+const getDoctorScheduleById = async(user:IJWTPayload, id: string)=>{
+   console.log("user", user)
+   const isExistDoctor = await prisma.doctor.findUnique({where: {email: user.email}})
+
+   if(!isExistDoctor){
+      throw new AppError(403, "Doctor is not found")
+   }
+
+   const result = await prisma.doctorSchedules.findMany({
+      where: {
+         doctorId: id
+      }
+   })
+
+   return result
+}
+
 export const DoctorScheduleService = {
-   createDoctorSchedule
+   createDoctorSchedule,
+   getDoctorScheduleById
 }

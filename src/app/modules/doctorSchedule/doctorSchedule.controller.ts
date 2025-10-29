@@ -19,7 +19,23 @@ const createDoctorSchedule = catchAsync(async (req: Request & {user?: IJWTPayloa
 })
 
 
+const getDoctorScheduleById = catchAsync(async (req: Request & {user?: IJWTPayload}, res: Response) => {
+   
+    const user = req.user as IJWTPayload;
+    const {id} = req.params
+    const result = await DoctorScheduleService.getDoctorScheduleById(user, id as string);
+
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "Doctor schedule created successfully!",
+        data: result
+    })
+})
+
+
 
 export const doctorScheduleController = {
-    createDoctorSchedule
+    createDoctorSchedule,
+    getDoctorScheduleById
 }

@@ -109,6 +109,7 @@ const myAppointment = async (user: IJWTPayload, filters: any, options: Ioptions)
     const { page, limit, skip, sortBy, sortOrder } = calcultatepagination(options);
     const { ...filterData } = filters;
 
+    console.log("my_Appointmnet_User", user)
     const andConditions: Prisma.AppointmentWhereInput[] = [];
 
     if (user.role === UserRole.PATIENT) {

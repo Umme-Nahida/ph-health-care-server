@@ -20,7 +20,6 @@ const login = async(payload: {email: string, password: string})=>{
     }
 
     const payloadJwt = {
-        id: user.id,
         email: user.email,
         role: user.role
     }
