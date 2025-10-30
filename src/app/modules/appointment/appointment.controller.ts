@@ -52,8 +52,21 @@ const updateAppointmentStatus = catchAsync(async (req: Request & { user?: IJWTPa
     })
 });
 
+const unPaidAppointment = catchAsync(async (req: Request & { user?: IJWTPayload }, res: Response) => {
+   
+    const result = await AppointmentService.unPaidAppointment();
+
+    sendResponse(res, {
+        statusCode: 201,
+        success: true,
+        message: "My appointment retrieve successfully!",
+        data: result
+    })
+});
+
 export const AppointmentController = {
     createAppointment,
     myAppointment,
-    updateAppointmentStatus
+    updateAppointmentStatus,
+    unPaidAppointment
 }
