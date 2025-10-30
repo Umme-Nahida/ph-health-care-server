@@ -207,9 +207,9 @@ const getMeInfo = async(user: IJWTPayload)=>{
 
 
 
-// change profile status by admin
-const changeProfileStatus = async(id:string, payload:{status: UserStatus})=>{
-
+// change profile status by admin------------ (INCOMPLETED)
+const changeProfileStatus = async(id:string, status:{status: UserStatus})=>{
+  console.log("changeProfile:", status) // INACTIVE 
   const userProfile = await prisma.user.findUniqueOrThrow({
     where: {id}
   })
@@ -217,7 +217,7 @@ const changeProfileStatus = async(id:string, payload:{status: UserStatus})=>{
 
   const updateUserStatus = await prisma.user.update({
     where: {id},
-    data: payload
+    data: {status:status}
   })
 
   return updateUserStatus

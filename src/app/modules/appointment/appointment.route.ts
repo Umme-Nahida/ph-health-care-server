@@ -8,6 +8,7 @@ import { AppointmentService } from "./appointment.service";
 const router = Router()
 
 router.post("/", authCookies(UserRole.PATIENT), AppointmentController.createAppointment)
+router.get("/unPaind-appointment", authCookies(UserRole.PATIENT), AppointmentController.createAppointment)
 router.get("/my-appointment", authCookies(UserRole.DOCTOR, UserRole.PATIENT), AppointmentController.myAppointment)
 router.patch("/status/:id",
      authCookies(UserRole.ADMIN, UserRole.DOCTOR),

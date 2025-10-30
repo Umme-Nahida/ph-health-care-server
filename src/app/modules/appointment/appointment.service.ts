@@ -4,7 +4,7 @@ import { IJWTPayload } from "../../Types/types";
 import { v4 as uuidv4 } from 'uuid';
 import { stripe } from "../../helpers/stripe";
 import { calcultatepagination, Ioptions } from "../../helpers/paginationHelper";
-import { AppointmentStatus, Prisma, UserRole } from "@prisma/client";
+import { AppointmentStatus, PaymentStatus, Prisma, UserRole } from "@prisma/client";
 import { tuple } from "zod";
 import AppError from "../../customizeErr/AppError";
 
@@ -193,8 +193,64 @@ const updateAppointmentStatus = async(appointmentId:string, status: AppointmentS
 
 }
 
+
+const unPaidAppointment = async()=>{
+    const thirtyMinitAgo = new Date(Date.now() - 30 * 60 * 1000);
+
+    const unPaidAppointments = await prisma.appointment.findMany({
+        where: {
+            createAt: {
+                lte: thirtyMinitAgo
+            },
+            paymentStatus: PaymentStatus.UNPAID
+        }
+    })
+    
+    const appointmentIdsToCancel = unPaidAppointments.map(item => item.id)
+
+
+    await prisma.$transaction(async(tnx)=>{
+
+        await tnx.payment.deleteMany({
+            where:{
+                appointmentId: {
+                    in: appointmentIdsToCancel
+                }
+            }
+        })
+
+        await tnx.appointment.deleteMany({
+            where:{
+                id: {
+                   in: appointmentIdsToCancel
+                }
+            }
+        })
+
+
+        // update book status 
+        for( const item of unPaidAppointments){
+             await tnx.doctorSchedules.update({
+            where: {
+                doctorId_scheduleId: {
+                    doctorId: item.doctorId,
+                    scheduleId: item.scheduleId
+                }
+            },
+            data: {
+                isBooked:false
+            }
+        })
+
+        }
+
+    })
+    return unPaidAppointments
+}
+
 export const AppointmentService = {
     createAppointment,
     myAppointment,
-    updateAppointmentStatus
+    updateAppointmentStatus,
+    unPaidAppointment
 };
