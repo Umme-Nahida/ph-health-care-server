@@ -4,7 +4,8 @@ import bcrypt from 'bcryptjs'
 import { fileUploader } from "../../helpers/fileUploader"
 import { calcultatepagination } from "../../helpers/paginationHelper"
 import { searchTermsFields } from "../../helpers/searchTerms"
-import { Admin, Doctor, Prisma, UserRole } from "@prisma/client"
+import { Admin, Doctor, Prisma, UserRole, UserStatus } from "@prisma/client"
+import { IJWTPayload } from "../../Types/types"
 
 const createPatient = async (payload: Request) => {
   // console.log("payload", payload.body)
@@ -162,9 +163,71 @@ const getAllUser = async (filters:any, options:any) => {
   }
 }
 
+
+const getMeInfo = async(user: IJWTPayload)=>{
+  
+  // console.log("user ", user)
+  const userInfo = await prisma.user.findUnique({
+    where:{
+       email: user.email,
+       status: UserStatus.ACTIVE
+    }
+  })
+
+  let profileData 
+  if(userInfo?.role === UserRole.ADMIN){
+     profileData = await prisma.admin.findUnique({
+        where: {
+           email: user.email
+        }
+      })
+  }
+
+ else if(userInfo?.role === UserRole.DOCTOR){
+    profileData = await prisma.doctor.findUnique({
+        where: {
+           email: user.email
+        }
+      })
+  }
+
+ else if(userInfo?.role === UserRole.PATIENT){
+      profileData= await prisma.patient.findUnique({
+        where: {
+           email: user.email
+        }
+      })
+  }
+
+  return {
+    ...userInfo,
+    ...profileData
+  }
+}
+
+
+
+// change profile status by admin
+const changeProfileStatus = async(id:string, payload:{status: UserStatus})=>{
+
+  const userProfile = await prisma.user.findUniqueOrThrow({
+    where: {id}
+  })
+
+
+  const updateUserStatus = await prisma.user.update({
+    where: {id},
+    data: payload
+  })
+
+  return updateUserStatus
+}
+
 export const userService = {
   createPatient,
   getAllUser, 
   createAdmin,
-  createDoctor
+  createDoctor,
+  getMeInfo,
+  changeProfileStatus
 }

@@ -4,11 +4,16 @@ import { fileUploader } from "../../helpers/fileUploader";
 import { UserValidation } from "./user.validation";
 import auth from "../../middlewares/authCookies";
 import { UserRole } from "@prisma/client";
+import authCookies from "../../middlewares/authCookies";
 
 const router = Router();
 
 // define user routes here
 router.get("/", userController.getAllUser)
+router.patch("/:id/status", userController.changeProfileStatus)
+
+router.get("/me", authCookies(UserRole.ADMIN, UserRole.DOCTOR, UserRole.PATIENT), userController.getMeInfo)
+
 router.post("/",
     fileUploader.upload.single('file'),
     (req:Request, res: Response, next: NextFunction)=> {

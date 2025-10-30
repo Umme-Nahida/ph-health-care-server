@@ -2,6 +2,7 @@ import { AppointmentStatus, PaymentStatus, Prescription, UserRole } from "@prism
 import { IJWTPayload } from "../../Types/types"
 import { prisma } from "../../../config/db"
 import AppError from "../../customizeErr/AppError"
+import { calcultatepagination, Ioptions } from "../../helpers/paginationHelper"
 
 const createPrescription = async(user:IJWTPayload, payload:Partial<Prescription>)=>{
     console.log("prescription")
@@ -41,6 +42,47 @@ const createPrescription = async(user:IJWTPayload, payload:Partial<Prescription>
 }
 
 
+const patientPrescription = async (user: IJWTPayload, options: Ioptions) => {
+    const { limit, page, skip, sortBy, sortOrder } = calcultatepagination(options);
+
+    const result = await prisma.prescription.findMany({
+        where: {
+            patient: {
+                email: user.email
+            }
+        },
+        skip,
+        take: limit,
+        include: {
+            doctor: true,
+            patient: true,
+            appointment: true
+        }
+    })
+
+    const total = await prisma.prescription.count({
+        where: {
+            patient: {
+                email: user.email
+            }
+        }
+    })
+
+    return {
+        meta: {
+            total,
+            page,
+            limit
+        },
+        data: result
+    }
+
+};
+
+
+
+
 export const PrescriptionService = {
-    createPrescription
+    createPrescription,
+    patientPrescription
 }

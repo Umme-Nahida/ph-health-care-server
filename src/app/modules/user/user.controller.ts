@@ -3,6 +3,7 @@ import catchAsync from "../../shared/catchAsync";
 import { userService } from "./user.service";
 import sendResponse from "../../shared/sendResponse";
 import { pick } from "../../helpers/pick";
+import { IJWTPayload } from "../../Types/types";
 
 
 
@@ -59,6 +60,34 @@ const getAllUser = catchAsync(async (req:Request, res:Response)=>{
     })
 })
 
+const getMeInfo = catchAsync(async (req:Request & {user?: IJWTPayload}, res:Response)=>{
+     
+    const user = req.user;
+     const result = await userService.getMeInfo(user as IJWTPayload)
+
+    sendResponse(res, {
+        statusCode: 200,
+        success:true,
+        message: "My Info retrieve successfully",
+        data: result
+    })
+})
+
+
+const changeProfileStatus = catchAsync(async (req:Request & {user?: IJWTPayload}, res:Response)=>{
+     
+     const {id} = req.params;
+     const {status} = req.body;
+     const result = await userService.changeProfileStatus(id, status)
+
+    sendResponse(res, {
+        statusCode: 200,
+        success:true,
+        message: "Change Profile status successfully",
+        data: result
+    })
+})
+
 
 
 
@@ -67,7 +96,9 @@ const getAllUser = catchAsync(async (req:Request, res:Response)=>{
 
 export const userController = {
     createPatient,
+    getMeInfo,
     getAllUser,
     createAdmin,
-    createDoctor
+    createDoctor,
+    changeProfileStatus
 }
