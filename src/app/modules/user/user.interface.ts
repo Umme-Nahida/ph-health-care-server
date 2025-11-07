@@ -11,5 +11,5 @@ export type IUser = {
 
 
 export type IUserLogin = {
-    
+    emmail: string
 }
