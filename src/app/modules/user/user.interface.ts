@@ -8,3 +8,8 @@ export type IUser = {
     phoneNumber: string
 
 }
+
+
+export type IUserLogin = {
+    
+}
