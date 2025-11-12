@@ -1,6 +1,5 @@
 import { PaymentStatus, UserRole } from "@prisma/client";
 import { IJWTPayload } from "../../Types/types"
-import { ca } from "zod/v4/locales";
 import AppError from "../../customizeErr/AppError";
 import { prisma } from "../../../config/db";
 
@@ -11,15 +10,15 @@ const getDashboardMeta = async (user: IJWTPayload) => {
 
     switch (user.role) {
         case UserRole.ADMIN:
-            metaData = "admin meta data";
+            metaData = await getAdminMetaData()
             break
 
         case UserRole.DOCTOR:
-            metaData = "doctor meta data"
+            metaData = await getDoctorMetaData(user)
             break
 
         case UserRole.PATIENT:
-            metaData = await getAdminMetaData()
+            metaData = await getPatientMetaData(user)
             break
 
         default:
@@ -31,6 +30,12 @@ const getDashboardMeta = async (user: IJWTPayload) => {
 
 }
 
+
+const getDoctorMetaData = async (user: IJWTPayload) => {
+}
+
+const getPatientMetaData = async (user: IJWTPayload) => {
+}
 
 
 const getAdminMetaData = async () => {
@@ -79,8 +84,7 @@ const getBarChartData = async () => {
     return appointmentCountPerMonth
 }
 
-
-
+  
 const getPieChart = async () => {
     const appointmentStatus = await prisma.appointment.groupBy({
         by: ['status'],
