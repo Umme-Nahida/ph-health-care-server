@@ -18,7 +18,7 @@ app.post("/webhook",
 )
 
 app.use(cors({
-    origin: 'http://localhost:5000',
+    origin: ['http://localhost:8080','http://localhost:3000'],
     credentials: true
 }));
 
